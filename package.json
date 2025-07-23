@@ -24,5 +24,25 @@
     "vite-plugin-electron-renderer": "^0.14.5",
     "vue-tsc": "^2.0.26"
   },
-  "main": "dist-electron/main.js"
+  "main": "dist-electron/main.js",
+  "build": {
+    "appId": "com.example.filegrouptool",
+    "productName": "文件分组工具",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "dist/**",
+      "dist-electron/**"
+    ],
+    "win": {
+      "target": "nsis",
+      "icon": "public/icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": true,
+      "allowToChangeInstallationDirectory": true
+    }
+  }
 }
