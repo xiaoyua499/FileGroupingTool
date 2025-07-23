@@ -1,5 +1,6 @@
 <template>
-  <div class="select_folder">
+  <div  @dragover.prevent @drop.prevent="handleDrop">
+    <div class="select_folder">
     <h1 class="select_folder_title">选择文件夹</h1>
     <div class="select_folder_content">
       <a-button type="primary" @click="selectFolder">选择文件夹</a-button>
@@ -30,6 +31,8 @@
   <div class="submit_btn">
     <a-button type="primary" block @click="handleGroup">开始分组</a-button>
   </div>
+  </div>
+  
 </template>
 <script setup lang="ts">
 import { reactive, ref } from "vue";
@@ -47,6 +50,8 @@ async function selectFolder() {
   const result = await window.electronAPI.selectFolder();
   if (result) {
     folderPath.value = result;
+    console.log("Selected folder:", folderPath.value);
+    
     message.success("选择成功");
   } else {
     message.warning("取消选择");
@@ -71,6 +76,32 @@ async function handleGroup() {
     message.error("执行异常");
   }
 }
+
+const handleDrop = (event: DragEvent) => {
+  event.preventDefault();
+  const items = event.dataTransfer?.items;
+  if (items && items.length > 0) {
+    const item = items[0];
+    if (item.kind === "file" && item.webkitGetAsEntry()?.isDirectory) {
+      
+      const file = item.getAsFile();
+     
+      if (!file) {
+        message.error("无法获取文件信息");
+        return;
+      }
+       const path = file.path
+       console.log("Drop event triggered",item, file);
+      if (path) {
+        folderPath.value = path;
+        message.success("文件夹已选择");
+      }
+    } else {
+      message.error("请拖拽一个文件夹");
+    }
+  }
+ 
+};
 </script>
 <style scoped lang="scss">
 .select_folder {

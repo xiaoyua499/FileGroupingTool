@@ -10,10 +10,6 @@ export function groupFiles(folderPath: string, step: string, folderCount: string
 
   const groups: string[][] = Array.from({ length: newFolderCount }, () => [])
 
-  // for (let i = 0; i < files.length; i++) {
-  //   const groupIndex = i % newFolderCount
-  //   groups[groupIndex].push(files[i])
-  // }
 
   for (let i = 0; i < files.length; i += newStep * newFolderCount) {
     for (let group = 0; group < newFolderCount; group++) {
