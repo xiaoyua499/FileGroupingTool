@@ -1,10 +1,10 @@
 <template>
-  <div  @dragover.prevent @drop.prevent="handleDrop">
+  <div style=" padding: 50px; border: 2px #6EA4D2 dashed; border-radius: 20px"  @dragover.prevent @drop.prevent="handleDrop">
     <div class="select_folder">
     <h1 class="select_folder_title">选择文件夹</h1>
     <div class="select_folder_content">
       <a-button type="primary" @click="selectFolder">选择文件夹</a-button>
-      <a-input placeholder="请选择文件夹" disabled v-model:value="folderPath" />
+      <a-input placeholder="请选择文件夹或将文件夹拖入虚框内" disabled v-model:value="folderPath" />
     </div>
   </div>
   <div class="group_settings">

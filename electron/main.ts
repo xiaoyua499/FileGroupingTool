@@ -30,6 +30,8 @@ let win: BrowserWindow | null
 function createWindow() {
   win = new BrowserWindow({
     title: '文件分组工具',
+    width: 1000,
+    height: 800,
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),

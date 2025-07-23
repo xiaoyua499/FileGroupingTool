@@ -1,4 +1,4 @@
-import { dialog, ipcMain, BrowserWindow, app } from "electron";
+import { shell, dialog, ipcMain, BrowserWindow, app } from "electron";
 import { fileURLToPath } from "node:url";
 import * as path$1 from "node:path";
 import * as fs from "fs";
@@ -23,9 +23,10 @@ function groupFiles(folderPath, step, folderCount) {
     const targetDir = path.join(folderPath, `group_${i + 1}`);
     if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
     for (const file of groups[i]) {
-      fs.copyFileSync(path.join(folderPath, file), path.join(targetDir, file));
+      fs.renameSync(path.join(folderPath, file), path.join(targetDir, file));
     }
   }
+  shell.openPath(folderPath);
   return true;
 }
 async function selectFolder(win2) {
@@ -45,6 +46,8 @@ let win;
 function createWindow() {
   win = new BrowserWindow({
     title: "文件分组工具",
+    width: 1e3,
+    height: 800,
     icon: path$1.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
     webPreferences: {
       preload: path$1.join(__dirname, "preload.mjs")

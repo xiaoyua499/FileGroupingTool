@@ -1,6 +1,6 @@
 import * as fs from 'fs'
 import * as path from 'path'
-
+import { shell } from 'electron'
 export function groupFiles(folderPath: string, step: string, folderCount: string) {
   let newStep = Number(step)
   let newFolderCount = Number(folderCount)
@@ -25,9 +25,10 @@ export function groupFiles(folderPath: string, step: string, folderCount: string
     const targetDir = path.join(folderPath, `group_${i + 1}`)
     if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir)
     for (const file of groups[i]) {
-      fs.copyFileSync(path.join(folderPath, file), path.join(targetDir, file))
+      fs.renameSync(path.join(folderPath, file), path.join(targetDir, file))
     }
   }
-
+  // 分组完成后打开该文件夹
+  shell.openPath(folderPath)
   return true
 }
