@@ -1,8 +1,9 @@
-import { app, BrowserWindow } from 'electron'
+import { app, BrowserWindow, ipcMain } from 'electron'
 import { createRequire } from 'node:module'
 import { fileURLToPath } from 'node:url'
 import path from 'node:path'
-
+import { groupFiles } from './utils/groupFiles.js'
+import { selectFolder } from './utils/selectFolder.js'
 const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -66,3 +67,15 @@ app.on('activate', () => {
 })
 
 app.whenReady().then(createWindow)
+
+// 打开文件夹
+ipcMain.handle('select-folder', async (event) => {
+  const win = BrowserWindow.fromWebContents(event.sender)
+  if (!win) return null
+  return await selectFolder(win)
+})
+
+// 执行分组逻辑
+ipcMain.handle('group-files', async (_, folderPath: string, step: number, folderCount: number) => {
+  return groupFiles(folderPath, step, folderCount)
+})

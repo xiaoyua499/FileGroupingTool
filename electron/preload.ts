@@ -18,7 +18,14 @@ contextBridge.exposeInMainWorld('ipcRenderer', {
     const [channel, ...omit] = args
     return ipcRenderer.invoke(channel, ...omit)
   },
-
+  selectFolder() {
+    return ipcRenderer.invoke('select-folder')
+  },
+  groupFiles(...args: Parameters<typeof ipcRenderer.invoke>) {
+    return ipcRenderer.invoke('group-files', ...args)
+  },
+  // selectFolder: () => ipcRenderer.invoke('select-folder'),
+  // groupFiles: (path, step, count) => ipcRenderer.invoke('group-files', path, step, count),
   // You can expose other APTs you need here.
   // ...
 })
