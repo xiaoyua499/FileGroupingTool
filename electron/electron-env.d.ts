@@ -1,4 +1,5 @@
 /// <reference types="vite-plugin-electron/electron-env" />
+// import type { groupFilesType } from './utils/type'
 
 declare namespace NodeJS {
   interface ProcessEnv {
@@ -20,9 +21,10 @@ declare namespace NodeJS {
     VITE_PUBLIC: string
   }
 }
+type groupFilesType = [olderPath: string, step: string, folderCount: string]
 interface ElectronAPI {
   selectFolder: () => Promise<any>
-  groupFiles: (...args: Parameters<typeof ipcRenderer.invoke>) => Promise<any>
+  groupFiles: (...args: groupFilesType) => Promise<any>
 }
 // Used in Renderer process, expose in `preload.ts`
 interface Window {

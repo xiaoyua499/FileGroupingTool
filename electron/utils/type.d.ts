@@ -1,5 +1,5 @@
-export type groupFilesType = {
+export type groupFilesType = [
   folderPath: string,
   step: string,
   folderCount: string
-}
+]
