@@ -11,6 +11,6 @@ declare module 'vue' {
     AButton: typeof import('ant-design-vue/es')['Button']
     AInput: typeof import('ant-design-vue/es')['Input']
     AUploadDragger: typeof import('ant-design-vue/es')['UploadDragger']
-    HelloWorld: typeof import('./src/components/HelloWorld.vue')['default']
+    Main: typeof import('./src/components/main.vue')['default']
   }
 }

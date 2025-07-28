@@ -20,9 +20,12 @@ declare namespace NodeJS {
     VITE_PUBLIC: string
   }
 }
-
+interface ElectronAPI {
+  selectFolder: () => Promise<any>
+  groupFiles: (...args: Parameters<typeof ipcRenderer.invoke>) => Promise<any>
+}
 // Used in Renderer process, expose in `preload.ts`
 interface Window {
   ipcRenderer: import('electron').IpcRenderer
-  electronAPI: import('electron').electronAPI
+  electronAPI: ElectronAPI
 }

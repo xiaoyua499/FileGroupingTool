@@ -28,6 +28,7 @@
   "build": {
     "appId": "com.example.filegrouptool",
     "productName": "文件分组工具",
+    "icon": "public/icon.ico",
     "directories": {
       "output": "dist"
     },

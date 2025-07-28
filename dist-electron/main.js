@@ -48,7 +48,7 @@ function createWindow() {
     title: "文件分组工具",
     width: 1e3,
     height: 800,
-    icon: path$1.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
+    icon: path$1.join(process.env.VITE_PUBLIC, "icon.ico"),
     webPreferences: {
       preload: path$1.join(__dirname, "preload.mjs")
     }
