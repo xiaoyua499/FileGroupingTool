@@ -4,18 +4,20 @@ import * as path$1 from "node:path";
 import * as fs from "fs";
 import * as path from "path";
 function groupFiles(folderPath, step, folderCount) {
-  let newStep = Number(step);
-  let newFolderCount = Number(folderCount);
-  const files = fs.readdirSync(folderPath).filter((f) => fs.statSync(path.join(folderPath, f)).isFile());
-  files.sort();
-  console.log(files);
+  const newStep = Number(step);
+  const newFolderCount = Number(folderCount);
+  const allFiles = fs.readdirSync(folderPath).filter((f) => fs.statSync(path.join(folderPath, f)).isFile()).map((f) => ({
+    name: f,
+    fullPath: path.join(folderPath, f),
+    birth: fs.statSync(path.join(folderPath, f)).birthtime.getTime()
+  })).sort((a, b) => a.birth - b.birth);
   const groups = Array.from({ length: newFolderCount }, () => []);
-  for (let i = 0; i < files.length; i += newStep * newFolderCount) {
+  for (let i = 0; i < allFiles.length; i += newStep * newFolderCount) {
     for (let group = 0; group < newFolderCount; group++) {
       const start = i + group * newStep;
       const end = start + newStep;
-      if (start < files.length) {
-        groups[group].push(...files.slice(start, end));
+      if (start < allFiles.length) {
+        groups[group].push(...allFiles.slice(start, end));
       }
     }
   }
@@ -23,8 +25,12 @@ function groupFiles(folderPath, step, folderCount) {
     const targetDir = path.join(folderPath, `group_${i + 1}`);
     if (!fs.existsSync(targetDir)) fs.mkdirSync(targetDir);
     for (const file of groups[i]) {
-      fs.renameSync(path.join(folderPath, file), path.join(targetDir, file));
+      const targetPath = path.join(targetDir, file.name);
+      fs.copyFileSync(file.fullPath, targetPath);
     }
+  }
+  for (const file of allFiles) {
+    fs.unlinkSync(file.fullPath);
   }
   shell.openPath(folderPath);
   return true;

@@ -10,20 +10,23 @@
     </div>
     <div class="group_settings">
       <h1 class="group_settings_title">分组设置</h1>
-      <div class="group_settings_size">
-        <p class="group_settings_size_title">分组步长</p>
-        <a-input class="group_settings_size_input" placeholder="请输入分组步长" :defaultValue="groupSet.step"
-          v-model:value="groupSet.step" />
-      </div>
-      <div class="group_settings_num">
-        <p class="group_settings_num_title">目标文件夹数</p>
-        <a-input class="group_settings_num_input" placeholder="请输入目标文件夹数" :defaultValue="groupSet.folderCount"
-          v-model:value="groupSet.folderCount" />
-      </div>
+      <a-form :model="groupSet" name="basic" layout="vertical" hideRequiredMark="false" :label-col="{ span: 8 }"
+        autocomplete="off">
+        <a-form-item label="分组步长" name="step" :rules="[{ required: true, message: '请输入分组步长!' }]">
+          <a-input class="group_settings_size_input" placeholder="请输入分组步长" :defaultValue="groupSet.step"
+            v-model:value="groupSet.step" />
+        </a-form-item>
+
+        <a-form-item label="目标文件夹数" name="folderCount" :rules="[{ required: true, message: '请输入目标文件夹数!' }]">
+          <a-input class="group_settings_num_input" placeholder="请输入目标文件夹数" :defaultValue="groupSet.folderCount"
+            v-model:value="groupSet.folderCount" />
+        </a-form-item>
+      </a-form>
     </div>
     <div class="submit_btn">
       <a-button type="primary" block @click="handleGroup">开始分组</a-button>
     </div>
+
   </div>
 
 </template>
