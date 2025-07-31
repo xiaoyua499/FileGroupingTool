@@ -43,12 +43,14 @@ type groupSet = {
   size: string;
   folderCount: string;
 };
+//分组设置
 const groupSet: groupSet = reactive({
   folderPath: "",
   phoneNum: '1',
   size: '1',
   folderCount: '2',
 });
+// 计算分组步长
 const groupStep = computed<string>(() => {
   const groupStep = Number(groupSet.size);
   const phoneNum = Number(groupSet.phoneNum);
