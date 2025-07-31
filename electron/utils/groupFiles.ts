@@ -15,6 +15,14 @@ export function groupFiles(folderPath: string, step: string, folderCount: string
       birth: fs.statSync(path.join(folderPath, f)).birthtime.getTime()
     }))
     .sort((a, b) => a.birth - b.birth)
+  // const allFiles = fs.readdirSync(folderPath)
+  //   .filter(f => fs.statSync(path.join(folderPath, f)).isFile())
+  //   .map(f => ({
+  //     name: f,
+  //     fullPath: path.join(folderPath, f),
+  //     mtime: fs.statSync(path.join(folderPath, f)).mtime.getTime()
+  //   }))
+  //   .sort((a, b) => a.mtime - b.mtime);
 
   // 2. 分组
   // const groups: typeof allFiles[][] = Array.from({ length: newFolderCount }, () => [])

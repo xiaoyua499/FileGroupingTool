@@ -52,8 +52,8 @@ let win;
 function createWindow() {
   win = new BrowserWindow({
     title: "文件分组工具",
-    width: 1e3,
-    height: 800,
+    width: 600,
+    height: 700,
     icon: path$1.join(process.env.VITE_PUBLIC, "icon.ico"),
     webPreferences: {
       preload: path$1.join(__dirname, "preload.mjs")
