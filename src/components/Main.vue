@@ -45,23 +45,30 @@ type groupSet = {
 };
 const groupSet: groupSet = reactive({
   folderPath: "",
-  phoneNum: "1",
-  size: "1",
-  folderCount: "2",
+  phoneNum: '1',
+  size: '1',
+  folderCount: '2',
 });
 const groupStep = computed<string>(() => {
-  const step = parseInt(groupSet.size);
-  const phoneNum = parseInt(groupSet.phoneNum);
-  const groupStep = (step * phoneNum).toString()
-  return groupStep
+  const groupStep = Number(groupSet.size);
+  const phoneNum = Number(groupSet.phoneNum);
+  return (groupStep * phoneNum).toString()
 });
 const formRef = useTemplateRef<FormInstance | null>("formRef");
-// 定义表单验证规则
 const rules: Record<string, Rule[]> = {
   folderPath: [{ required: true, message: "请选择目标文件夹!" }],
-  phoneNum: [{ required: true, message: "请输入使用的设备数!" }],
-  size: [{ required: true, message: "请输入分组步长!" }],
-  folderCount: [{ required: true, message: "请输入目标文件夹数!" }],
+  phoneNum: [
+    { required: true, message: '请输入设备数!' },
+    { pattern: /^[1-9]\d*$/, message: '设备数必须为正整数!' },
+  ],
+  size: [
+    { required: true, message: '请输入分组步长!' },
+    { pattern: /^[1-9]\d*$/, message: '分组步长必须为正整数!' },
+  ],
+  folderCount: [
+    { required: true, message: '请输入目标文件夹数!' },
+    { pattern: /^[1-9]\d*$/, message: '目标文件夹数必须为正整数!' },
+  ],
 };
 // 选择文件夹
 async function selectFolder() {
