@@ -1,23 +1,26 @@
 <template>
   <div style=" padding: 50px; border: 2px #6EA4D2 dashed; border-radius: 20px" @dragover.prevent
     @drop.prevent="handleDrop">
-    <div class="select_folder">
-      <h1 class="select_folder_title">选择文件夹</h1>
-      <div class="select_folder_content">
-        <a-button type="primary" @click="selectFolder">选择文件夹</a-button>
-        <a-input placeholder="请选择文件夹或将文件夹拖入虚框内" disabled v-model:value="folderPath" />
-      </div>
-    </div>
     <div class="group_settings">
-      <h1 class="group_settings_title">分组设置</h1>
-      <a-form :model="groupSet" name="basic" layout="vertical" hideRequiredMark="false" :label-col="{ span: 8 }"
-        autocomplete="off">
-        <a-form-item label="分组步长" name="step" :rules="[{ required: true, message: '请输入分组步长!' }]">
-          <a-input class="group_settings_size_input" placeholder="请输入分组步长" :defaultValue="groupSet.step"
-            v-model:value="groupSet.step" />
+      <h1 class="select_folder_title">选择文件夹</h1>
+      <a-form :model="groupSet" ref="formRef" name="groupForm" layout="vertical" hideRequiredMark="false" :rules="rules"
+        :label-col="{ span: 8 }" autocomplete="off">
+        <a-form-item style="margin-bottom: 32px;" name="folderPath">
+          <div class="select_folder_content">
+            <a-button type="primary" @click="selectFolder">选择文件夹</a-button>
+            <a-input placeholder="请选择文件夹或将文件夹拖入虚框内" disabled v-model:value="groupSet.folderPath" />
+          </div>
         </a-form-item>
-
-        <a-form-item label="目标文件夹数" name="folderCount" :rules="[{ required: true, message: '请输入目标文件夹数!' }]">
+        <h1 class="group_settings_title">分组设置</h1>
+        <a-form-item label="设备数" name="phoneNum">
+          <a-input class="group_settings_size_input" placeholder="请输入分组步长" :defaultValue="groupSet.phoneNum"
+            v-model:value="groupSet.phoneNum" />
+        </a-form-item>
+        <a-form-item label="分组步长(每集张数)" name="size">
+          <a-input class="group_settings_size_input" placeholder="请输入分组步长" :defaultValue="groupSet.size"
+            v-model:value="groupSet.size" />
+        </a-form-item>
+        <a-form-item label="目标文件夹数" name="folderCount">
           <a-input class="group_settings_num_input" placeholder="请输入目标文件夹数" :defaultValue="groupSet.folderCount"
             v-model:value="groupSet.folderCount" />
         </a-form-item>
@@ -31,47 +34,66 @@
 
 </template>
 <script setup lang="ts">
-import { reactive, ref } from "vue";
+import { computed, reactive, useTemplateRef } from "vue";
 import { message } from "ant-design-vue";
-const folderPath = ref<string>("");
+import type { FormInstance, Rule } from "ant-design-vue/es/form";
 type groupSet = {
-  step: string;
+  folderPath: string;
+  phoneNum: string;
+  size: string;
   folderCount: string;
 };
 const groupSet: groupSet = reactive({
-  step: "1",
+  folderPath: "",
+  phoneNum: "1",
+  size: "1",
   folderCount: "2",
 });
+const groupStep = computed<string>(() => {
+  const step = parseInt(groupSet.size);
+  const phoneNum = parseInt(groupSet.phoneNum);
+  const groupStep = (step * phoneNum).toString()
+  return groupStep
+});
+const formRef = useTemplateRef<FormInstance | null>("formRef");
+// 定义表单验证规则
+const rules: Record<string, Rule[]> = {
+  folderPath: [{ required: true, message: "请选择目标文件夹!" }],
+  phoneNum: [{ required: true, message: "请输入使用的设备数!" }],
+  size: [{ required: true, message: "请输入分组步长!" }],
+  folderCount: [{ required: true, message: "请输入目标文件夹数!" }],
+};
+// 选择文件夹
 async function selectFolder() {
   const result = await window.electronAPI.selectFolder();
   if (result) {
-    folderPath.value = result;
-    console.log("Selected folder:", folderPath.value);
-
+    groupSet.folderPath = result;
+    // console.log("Selected folder:", groupSet.folderPath);
+    formRef.value?.validate()
     message.success("选择成功");
   } else {
     message.warning("取消选择");
   }
 }
-
+// 处理分组
 async function handleGroup() {
-  try {
-    const success = await window.electronAPI.groupFiles(
-      folderPath.value,
-      groupSet.step,
-      groupSet.folderCount
-    );
-    if (success) {
+  // 验证表单
+  await formRef.value?.validate()
+    .then(() => {
+      window.electronAPI.groupFiles(
+        groupSet.folderPath,
+        groupStep.value,
+        groupSet.folderCount
+      );
       message.success("分组完成！");
-    } else {
+    })
+    .catch((error: any) => {
+      console.error(error);
       message.error("分组失败！");
-    }
-  } catch (err) {
-    console.error(err);
-    message.error("执行异常");
-  }
+    });
 }
 
+// 处理拖拽事件
 const handleDrop = (event: DragEvent) => {
   event.preventDefault();
   const items = event.dataTransfer?.items;
@@ -86,7 +108,8 @@ const handleDrop = (event: DragEvent) => {
       const path = file.path
       console.log("Drop event triggered", item, file);
       if (path) {
-        folderPath.value = path;
+        groupSet.folderPath = path;
+        formRef.value?.validate()
         message.success("文件夹已选择");
       }
     } else {
@@ -109,6 +132,7 @@ const handleDrop = (event: DragEvent) => {
     display: flex;
     align-items: center;
     justify-content: flex-start;
+    // margin-bottom: 32px;
   }
 }
 
