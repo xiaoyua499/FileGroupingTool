@@ -4,6 +4,7 @@ import { fileURLToPath } from 'node:url'
 import * as path from 'node:path'
 import { groupFiles } from './utils/groupFiles.js'
 import { selectFolder } from './utils/selectFolder.js'
+import type { GroupFilesParams, GroupProgressPayload } from './utils/type.js'
 // const require = createRequire(import.meta.url)
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
 
@@ -61,8 +62,10 @@ ipcMain.handle('select-folder', async (event) => {
 })
 
 // 执行分组逻辑
-ipcMain.handle('group-files', async (_, folderPath: string, step: string, folderCount: string) => {
-  return groupFiles(folderPath, step, folderCount)
+ipcMain.handle('group-files', async (event, params: GroupFilesParams) => {
+  return groupFiles(params, (payload: GroupProgressPayload) => {
+    event.sender.send('group-files-progress', payload)
+  })
 })
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

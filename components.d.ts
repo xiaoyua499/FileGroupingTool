@@ -12,6 +12,8 @@ declare module 'vue' {
     AForm: typeof import('ant-design-vue/es')['Form']
     AFormItem: typeof import('ant-design-vue/es')['FormItem']
     AInput: typeof import('ant-design-vue/es')['Input']
+    AMenu: typeof import('ant-design-vue/es')['Menu']
+    AProgress: typeof import('ant-design-vue/es')['Progress']
     AUploadDragger: typeof import('ant-design-vue/es')['UploadDragger']
     Main: typeof import('./src/components/Main.vue')['default']
   }

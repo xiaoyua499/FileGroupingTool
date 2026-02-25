@@ -21,10 +21,16 @@ declare namespace NodeJS {
     VITE_PUBLIC: string
   }
 }
-type groupFilesType = [olderPath: string, step: string, folderCount: string]
+type GroupFilesParams = {
+  folderPath: string
+  groupType: string
+  step: string
+  folderCount: string
+  numberPerGroup: string
+}
 interface ElectronAPI {
   selectFolder: () => Promise<any>
-  groupFiles: (...args: groupFilesType) => Promise<any>
+  groupFiles: (params: GroupFilesParams) => Promise<any>
 }
 // Used in Renderer process, expose in `preload.ts`
 interface Window {
